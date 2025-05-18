@@ -39,27 +39,32 @@ public class AppUser implements UserDetails {
     private String firstName;
     private String lastName;
     private LocalDate birthDate;
-    private String profilePicture;
+    private String profilePictureUrl;
     private LocalDate createdAt;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    @ToString.Exclude
     private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    @ToString.Exclude
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
+    @ToString.Exclude
     private List<Friend> friends = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @ToString.Exclude
     private List<Like> likes = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @ToString.Exclude
     private List<Widget> widgets = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private Set<Role> roles;
+    private Set<Role> role;
 
     private  boolean accountNonExpired=true;
     private  boolean accountNonLocked=true;
@@ -69,22 +74,23 @@ public class AppUser implements UserDetails {
     @Override
     public Collection<GrantedAuthority> getAuthorities() {
 
-        return roles.stream()
+        return role.stream()
                 .map(role -> new SimpleGrantedAuthority(role.name()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
-    public AppUser(String email, String password, Collection<? extends GrantedAuthority> authorities) {
-        this(email, password, true, true, true, true, authorities);
+    public AppUser(String email, String password, Collection<? extends GrantedAuthority> authorities, Set<Role> role) {
+        this(email, password, true, true, true, true, authorities, role);
     }
 
-    public AppUser(String email, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
+    public AppUser(String email, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities, Set<Role> role) {
         this.email = email;
         this.password = password;
         this.enabled = enabled;
         this.accountNonExpired = accountNonExpired;
         this.credentialsNonExpired = credentialsNonExpired;
         this.accountNonLocked = accountNonLocked;
+        this.role = role;
    }
 
     @PrePersist

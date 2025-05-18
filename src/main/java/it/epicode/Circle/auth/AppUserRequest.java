@@ -11,5 +11,9 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class AppUserRequest {
     private String email;
-    private Role role;
+    private String firstName;
+    private String lastName;
+    private LocalDate birthDate;
+    private String profilePictureUrl;
+    private LocalDate createdAt;
 }

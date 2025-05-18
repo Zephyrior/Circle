@@ -8,6 +8,7 @@ import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -22,10 +23,10 @@ public class ExceptionAuthHandlerClass extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(value = SecurityException.class)
-    protected ResponseEntity<String> entityNotFound(SecurityException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
+//    @ExceptionHandler(value = SecurityException.class)
+//    protected ResponseEntity<String> entityNotFound(SecurityException ex) {
+//        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+//    }
 
     @ExceptionHandler(value = EntityExistsException.class)
     protected ResponseEntity<String> entityNotFound(EntityExistsException ex) {
@@ -56,5 +57,10 @@ public class ExceptionAuthHandlerClass extends ResponseEntityExceptionHandler {
 
         }
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<String> handleBadCredentials(BadCredentialsException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 }
