@@ -52,13 +52,13 @@ public class AppUser implements UserDetails {
     @ToString.Exclude
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL)
-    @ToString.Exclude
-    private List<Circle> sentRequests = new ArrayList<>();
-
-    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
-    @ToString.Exclude
-    private List<Circle> receivedRequests = new ArrayList<>();
+//    @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL)
+//    @ToString.Exclude
+//    private List<Circle> sentRequests = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
+//    @ToString.Exclude
+//    private List<Circle> receivedRequests = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @ToString.Exclude

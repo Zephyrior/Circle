@@ -8,9 +8,11 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Validated
@@ -33,7 +35,8 @@ public class CircleService {
 
     public AppUser getUserByEmail() {
         String email = getCurrentUserEmail();
-        return appUserRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("User not found: " + email));
+        return appUserRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + email));
     }
 
     public List<CircleResponse> getAcceptedCirclesFromCurrentUser() {
@@ -85,5 +88,96 @@ public class CircleService {
                     c.isSmallCircle(),
                     c.getCircleStatus());
         }).toList();
+    }
+
+    @Transactional
+    public CircleResponse sendCircleRequest(Long receiverId) {
+        AppUser requester = getUserByEmail();
+
+        if (requester.getId().equals(receiverId)) {
+            throw new IllegalArgumentException("You cannot send a circle request to yourself");
+        }
+
+        AppUser receiver = appUserRepository.findById(receiverId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + receiverId));
+
+        Optional<Circle> existingCircle = circleRepository
+                .findExistingCircleRequest(requester.getId(), receiver.getId());
+
+        if (existingCircle.isPresent()) {
+            throw new IllegalArgumentException("Circle request already exists");
+        }
+
+        Circle newCircle = new Circle();
+        newCircle.setRequester(requester);
+        newCircle.setReceiver(receiver);
+        newCircle.setCircleStatus(CircleStatus.PENDING);
+        newCircle.setSmallCircle(false);
+
+        Circle savedCircle = circleRepository.save(newCircle);
+
+        return new CircleResponse(savedCircle.getId(),
+                new UserPreview(receiver.getId(),
+                        receiver.getFirstName(),
+                        receiver.getLastName(),
+                        receiver.getProfilePictureUrl()
+                ),
+                newCircle.isSmallCircle(),
+                newCircle.getCircleStatus());
+    }
+
+    @Transactional
+    public CircleResponse acceptCircleRequest(Long circleId) {
+        AppUser receiver = getUserByEmail();
+        Circle circle = circleRepository.findById(circleId)
+                .orElseThrow(() -> new EntityNotFoundException("Circle not found: " + circleId));
+
+        if (!circle.getReceiver().getId().equals(receiver.getId())) {
+            throw new IllegalArgumentException("You are not the receiver of this circle request");
+        }
+
+        circle.setCircleStatus(CircleStatus.ACCEPTED);
+        Circle savedCircle = circleRepository.save(circle);
+
+        return new CircleResponse(savedCircle.getId(),
+                new UserPreview(savedCircle.getRequester().getId(),
+                        savedCircle.getRequester().getFirstName(),
+                        savedCircle.getRequester().getLastName(),
+                        savedCircle.getRequester().getProfilePictureUrl()
+                ),
+                savedCircle.isSmallCircle(),
+                savedCircle.getCircleStatus());
+    }
+
+    @Transactional
+    public void declineCircleRequest(Long circleId) {
+        AppUser receiver = getUserByEmail();
+        Circle circle = circleRepository.findById(circleId)
+                .orElseThrow(() -> new EntityNotFoundException("Circle not found: " + circleId));
+
+        if (!circle.getReceiver().getId().equals(receiver.getId())) {
+            throw new IllegalArgumentException("You are not the receiver of this circle request");
+        }
+
+        if (circle.getCircleStatus() != CircleStatus.PENDING) {
+            throw new IllegalArgumentException("Only pending circle requests can be declined");
+        }
+        circleRepository.delete(circle);
+    }
+
+    @Transactional
+    public void cancelCircleRequest(Long circleId) {
+        AppUser requester = getUserByEmail();
+        Circle circle = circleRepository.findById(circleId)
+                .orElseThrow(() -> new EntityNotFoundException("Circle not found: " + circleId));
+
+        if (!circle.getRequester().getId().equals(requester.getId())) {
+            throw new IllegalArgumentException("You are not the requester of this circle request");
+        }
+
+        if (circle.getCircleStatus() != CircleStatus.PENDING) {
+            throw new IllegalArgumentException("Only pending circle requests can be declined");
+        }
+        circleRepository.delete(circle);
     }
 }
