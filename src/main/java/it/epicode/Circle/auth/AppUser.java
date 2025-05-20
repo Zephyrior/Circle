@@ -1,11 +1,12 @@
 package it.epicode.Circle.auth;
 
 import it.epicode.Circle.comments.Comment;
-import it.epicode.Circle.friends.Friend;
+import it.epicode.Circle.circles.Circle;
 import it.epicode.Circle.likes.Like;
 import it.epicode.Circle.posts.Post;
 import it.epicode.Circle.widgets.Widget;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class AppUser implements UserDetails {
     @Id
@@ -50,9 +52,13 @@ public class AppUser implements UserDetails {
     @ToString.Exclude
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<Circle> sentRequests = new ArrayList<>();
+
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     @ToString.Exclude
-    private List<Friend> friends = new ArrayList<>();
+    private List<Circle> receivedRequests = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @ToString.Exclude
@@ -79,19 +85,19 @@ public class AppUser implements UserDetails {
                 .collect(Collectors.toSet());
     }
 
-    public AppUser(String email, String password, Collection<? extends GrantedAuthority> authorities, Set<Role> role) {
-        this(email, password, true, true, true, true, authorities, role);
-    }
-
-    public AppUser(String email, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities, Set<Role> role) {
-        this.email = email;
-        this.password = password;
-        this.enabled = enabled;
-        this.accountNonExpired = accountNonExpired;
-        this.credentialsNonExpired = credentialsNonExpired;
-        this.accountNonLocked = accountNonLocked;
-        this.role = role;
-   }
+//    public AppUser(String email, String password, Collection<? extends GrantedAuthority> authorities, Set<Role> role) {
+//        this(email, password, true, true, true, true, authorities, role);
+//    }
+//
+//    public AppUser(String email, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities, Set<Role> role) {
+//        this.email = email;
+//        this.password = password;
+//        this.enabled = enabled;
+//        this.accountNonExpired = accountNonExpired;
+//        this.credentialsNonExpired = credentialsNonExpired;
+//        this.accountNonLocked = accountNonLocked;
+//        this.role = role;
+//   }
 
     @PrePersist
     protected void onCreate() {

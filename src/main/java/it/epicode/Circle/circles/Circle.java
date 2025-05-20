@@ -1,6 +1,7 @@
-package it.epicode.Circle.friends;
+package it.epicode.Circle.circles;
 
 import it.epicode.Circle.auth.AppUser;
+import it.epicode.Circle.enums.CircleStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,19 +11,25 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Friends")
+@Table(name = "circles")
 
-public class Friend {
+public class Circle {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    private boolean smallCircle = false;
+
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "requester_id")
     private AppUser requester;
 
     @ManyToOne
-    @JoinColumn(name = "friend_id")
+    @JoinColumn(name = "receiver_id")
     private AppUser receiver;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private CircleStatus circleStatus = CircleStatus.PENDING;
 
 }
