@@ -29,7 +29,7 @@ public class PostService {
         return (AppUser) authentication.getPrincipal();
     }
 
-    public CommonResponse  createPost(PostRequest request) {
+    public CommonResponse createPost(PostRequest request) {
         Post post = new Post();
 
         BeanUtils.copyProperties(request, post);
@@ -60,30 +60,14 @@ public class PostService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, createdAt));
         Page<Post> postsPage = postRepository.findAll(pageable);
 
-        return postsPage.map(post -> new PostResponse(
-            post.getId(),
-            post.getContent(),
-            post.getMediaUrl(),
-            post.getCreatedAt(),
-            post.getAuthor().getId(),
-            post.getComments().stream().map(Comment::getId).toList(),
-            post.getLikes().stream().map(Like::getId).toList()
-        ));
+        return postsPage.map(PostMapper::toResponse);
     }
 
     public PostResponse getPostById(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Post not found"));
 
-        return new PostResponse(
-                post.getId(),
-                post.getContent(),
-                post.getMediaUrl(),
-                post.getCreatedAt(),
-                post.getAuthor().getId(),
-                post.getComments().stream().map(Comment::getId).toList(),
-                post.getLikes().stream().map(Like::getId).toList()
-        );
+        return PostMapper.toResponse(post);
     }
 
     public PostResponse updatePost(Long id, PostRequest request) {
@@ -101,14 +85,6 @@ public class PostService {
 
         Post updatedPost = postRepository.save(post);
 
-        return new PostResponse(
-                updatedPost.getId(),
-                updatedPost.getContent(),
-                updatedPost.getMediaUrl(),
-                updatedPost.getCreatedAt(),
-                updatedPost.getAuthor().getId(),
-                updatedPost.getComments().stream().map(Comment::getId).toList(),
-                updatedPost.getLikes().stream().map(Like::getId).toList()
-        );
+        return PostMapper.toResponse(updatedPost);
     }
 }
