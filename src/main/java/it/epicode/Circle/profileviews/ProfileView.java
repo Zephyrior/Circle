@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -27,7 +27,13 @@ public class ProfileView {
     @JoinColumn(name = "viewed_user_id")
     private AppUser viewed;
 
-    private LocalDate viewedAt;
+    private LocalDateTime viewedAt;
+
+    @PrePersist
+
+    public void onCreate() {
+        viewedAt = LocalDateTime.now();
+    }
 
 
 }
