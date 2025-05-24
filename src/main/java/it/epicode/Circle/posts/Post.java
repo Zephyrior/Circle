@@ -37,6 +37,10 @@ public class Post {
     @JoinColumn(name = "author_id")
     private AppUser author;
 
+    @ManyToOne
+    @JoinColumn(name = "profile_owner_id")
+    private AppUser profileOwner;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 

@@ -31,7 +31,7 @@ public class PostController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping
-    public Page<PostResponse> getAllPosts(@RequestParam(defaultValue = "0") int page,
+    public Page<PostResponse> getAllPublicPosts(@RequestParam(defaultValue = "0") int page,
                                           @RequestParam(defaultValue = "10") int size,
                                           @RequestParam(defaultValue = "createdAt") String createdAt) {
         return postService.getAllPosts(page, size, createdAt);

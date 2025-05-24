@@ -22,4 +22,6 @@ public class PostRequest {
 
     private String mediaUrl;
 
+    private Long profileOwnerId;
+
 }

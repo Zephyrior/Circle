@@ -1,6 +1,7 @@
 package it.epicode.Circle.posts;
 
 import it.epicode.Circle.comments.CommentResponse;
+import it.epicode.Circle.likes.LikeResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,5 +21,8 @@ public class PostResponse {
     private Long authorId;
     private String authorFullName;
     private List<CommentResponse> comments = new ArrayList<>();
-    private List<Long> likeIds = new ArrayList<>();
+    private List<LikeResponse> likes = new ArrayList<>();
+    private int likesCount;
+    private boolean likedByUser;
+    private Long profileOwnerId;
 }

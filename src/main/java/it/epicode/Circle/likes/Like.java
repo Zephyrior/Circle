@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -21,13 +21,19 @@ public class Like {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id",  nullable = false)
     private AppUser user;
 
     @ManyToOne
+    @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
-    private LocalDate likedAt;
+    @Column(nullable = false)
+    private LocalDateTime likedAt;
 
 
+    @PrePersist
+    public void onLike() {
+        likedAt = LocalDateTime.now();
+    }
 }

@@ -9,4 +9,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommonResponse {
     private Long id;
+    private String message;
+
+
+    public static CommonResponse withId(Long id) {
+        return new CommonResponse(id, null);
+    }
+
+    public static CommonResponse withMessage(String message) {
+        return new CommonResponse(null, message);
+    }
 }

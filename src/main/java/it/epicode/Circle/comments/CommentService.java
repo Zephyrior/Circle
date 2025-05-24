@@ -9,10 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
 @Service
+@Validated
 public class CommentService {
 
     @Autowired
@@ -40,7 +42,7 @@ public class CommentService {
 
         Comment savedComment = commentRepository.save(comment);
 
-        return new CommonResponse(savedComment.getId());
+        return CommonResponse.withId(savedComment.getId());
     }
 
     public void deleteComment(Long id) {

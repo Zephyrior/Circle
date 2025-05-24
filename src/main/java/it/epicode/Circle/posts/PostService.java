@@ -1,6 +1,7 @@
 package it.epicode.Circle.posts;
 
 import it.epicode.Circle.auth.AppUser;
+import it.epicode.Circle.auth.AppUserRepository;
 import it.epicode.Circle.comments.Comment;
 import it.epicode.Circle.common.CommonResponse;
 import it.epicode.Circle.likes.Like;
@@ -23,6 +24,9 @@ public class PostService {
     @Autowired
     private PostRepository postRepository;
 
+    @Autowired
+    private AppUserRepository appUserRepository;
+
     public AppUser getUserByEmail(){
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -30,17 +34,31 @@ public class PostService {
     }
 
     public CommonResponse createPost(PostRequest request) {
+
+        AppUser author = getUserByEmail();
+
         Post post = new Post();
+        post.setAuthor(author);
+        post.setContent(request.getContent());
+        post.setMediaUrl(request.getMediaUrl());
 
-        BeanUtils.copyProperties(request, post);
+//        BeanUtils.copyProperties(request, post);
+//        post.setContent(request.getContent());
+//        post.setMediaUrl(request.getMediaUrl());
+//
+//        AppUser appUser = getUserByEmail();
+//        post.setAuthor(appUser);
 
-        AppUser appUser = getUserByEmail();
-        post.setAuthor(appUser);
+        if(request.getProfileOwnerId() != null){
+            AppUser profileOwner = appUserRepository.findById(request.getProfileOwnerId())
+                    .orElseThrow(() -> new EntityNotFoundException("Profile owner not found"));
+            post.setProfileOwner(profileOwner);
+        }
 
 
         Post savedPost = postRepository.save(post);
 
-        return new CommonResponse(savedPost.getId());
+        return CommonResponse.withId(savedPost.getId());
     }
 
     public void deletePost(Long id) {
@@ -60,14 +78,18 @@ public class PostService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, createdAt));
         Page<Post> postsPage = postRepository.findAll(pageable);
 
-        return postsPage.map(PostMapper::toResponse);
+        Long currentUserId = getUserByEmail().getId();
+
+        return postsPage.map(post -> PostMapper.toResponse(post, currentUserId));
     }
 
     public PostResponse getPostById(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Post not found"));
 
-        return PostMapper.toResponse(post);
+        Long currentUserId = getUserByEmail().getId();
+
+        return PostMapper.toResponse(post, currentUserId);
     }
 
     public PostResponse updatePost(Long id, PostRequest request) {
@@ -85,6 +107,8 @@ public class PostService {
 
         Post updatedPost = postRepository.save(post);
 
-        return PostMapper.toResponse(updatedPost);
+        Long currentUserId = getUserByEmail().getId();
+
+        return PostMapper.toResponse(updatedPost, currentUserId);
     }
 }
