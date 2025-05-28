@@ -13,7 +13,7 @@ public class CustomErrorController implements ErrorController {
     @RequestMapping("/error")
     public ResponseEntity<Object> handleError(HttpServletRequest request) {
         RuntimeException exception = (RuntimeException) request.getAttribute("javax.servlet.error.exception");
-        if (exception == null) exception = new AccessDeniedException("Accesso negato");
+        if (exception == null) exception = new AccessDeniedException("Access Denied");
         throw exception;
     }
 }

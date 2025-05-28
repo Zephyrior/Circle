@@ -1,6 +1,7 @@
 package it.epicode.Circle.auth;
 
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,10 +17,10 @@ public class AppUserRequest {
     private String lastName;
     private LocalDate birthDate;
 
-    @Max(value = 60, message = "Shout out must be less than 60 characters")
+    @Size(max = 60, message = "Shout out must be less than 60 characters")
     private String shoutOut;
 
-    @Max(value = 300, message = "Bio must be less than 300 characters")
+    @Size(max = 300, message = "Bio must be less than 300 characters")
     private String bio;
     private String profilePictureUrl;
 }

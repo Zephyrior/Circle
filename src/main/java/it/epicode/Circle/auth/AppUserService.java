@@ -36,7 +36,7 @@ public class AppUserService {
 
     public AppUser registerUser(RegisterRequest request,Set<Role> role) {
         if (appUserRepository.existsByEmail(request.getEmail())) {
-            throw new EntityExistsException("Email già registrata");
+            throw new EntityExistsException("Email already registered");
         }
 
         AppUser appUser = new AppUser();
