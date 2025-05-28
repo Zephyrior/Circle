@@ -78,7 +78,7 @@ public class AppUserService {
 
     public List<AppUserResponse> getAllUsers() {
         return appUserRepository.findAll().stream()
-                .map(a -> new AppUserResponse(a.getId(),  a.getEmail(), a.getFirstName()+" "+a.getLastName(), a.getBirthDate(), a. getProfilePictureUrl(), a.getCreatedAt(), a.getRole()))
+                .map(a -> new AppUserResponse(a.getId(),  a.getEmail(), a.getFirstName()+" "+a.getLastName(), a.getBirthDate(), a. getProfilePictureUrl(), a.getShoutOut(), a.getBio(), a.getCreatedAt(), a.getRole()))
                 .collect(Collectors.toList());
     }
 
@@ -99,7 +99,7 @@ public class AppUserService {
     public AppUserResponse getCurrentUser() {
         AppUser appUser = getUserByEmail();
 
-        return new AppUserResponse(appUser.getId(), appUser.getEmail(), appUser.getFirstName()+" "+appUser.getLastName(), appUser.getBirthDate(), appUser.getProfilePictureUrl(), appUser.getCreatedAt(), appUser.getRole());
+        return new AppUserResponse(appUser.getId(), appUser.getEmail(), appUser.getFirstName()+" "+appUser.getLastName(), appUser.getBirthDate(), appUser.getProfilePictureUrl(), appUser.getShoutOut(), appUser.getBio(),appUser.getCreatedAt(), appUser.getRole());
     }
 
 //    public AppUser getCurrentUser() {
@@ -118,4 +118,36 @@ public class AppUserService {
 //            throw new IllegalStateException("Unexpected principal type: " + principal.getClass().getName());
 //        }
 //    }
+
+    public AppUserResponse updateUser(AppUserRequest request) {
+        AppUser appUser = getUserByEmail();
+
+        appUser.setFirstName(request.getFirstName());
+        appUser.setLastName(request.getLastName());
+        appUser.setBirthDate(request.getBirthDate());
+        appUser.setShoutOut(request.getShoutOut());
+        appUser.setBio(request.getBio());
+        appUser.setProfilePictureUrl(request.getProfilePictureUrl());
+
+        appUserRepository.save(appUser);
+
+        return new AppUserResponse(appUser.getId(), appUser.getEmail(), appUser.getFirstName()+" "+appUser.getLastName(), appUser.getBirthDate(), appUser.getProfilePictureUrl(), appUser.getShoutOut(), appUser.getBio(), appUser.getCreatedAt(), appUser.getRole());
+    }
+
+    public AppUserResponse updateShoutOut(AppUserRequest request) {
+        AppUser appUser = getUserByEmail();
+
+        appUser.setShoutOut(request.getShoutOut());
+
+        appUserRepository.save(appUser);
+
+        return new AppUserResponse(appUser.getId(), appUser.getEmail(), appUser.getFirstName()+" "+appUser.getLastName(), appUser.getBirthDate(), appUser.getProfilePictureUrl(), appUser.getShoutOut(), appUser.getBio(), appUser.getCreatedAt(), appUser.getRole());
+    }
+
+    public List<AppUserResponse> findUsersByName(String name) {
+
+        return appUserRepository.findUsersByName(name).stream()
+                .map(a -> new AppUserResponse(a.getId(), a.getEmail(), a.getFirstName()+" "+a.getLastName(), a.getBirthDate(), a. getProfilePictureUrl(), a.getShoutOut(), a.getBio(), a.getCreatedAt(), a.getRole()))
+                .collect(Collectors.toList());
+    }
 }

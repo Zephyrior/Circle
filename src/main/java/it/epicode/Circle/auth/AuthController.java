@@ -2,8 +2,10 @@ package it.epicode.Circle.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Validated
 public class AuthController {
 
     private final AppUserService appUserService;
@@ -53,4 +56,22 @@ public class AuthController {
 //        System.out.println("Auth /me: " + auth);
 //        return ResponseEntity.ok(auth.getAuthorities());
 //    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/update")
+    public AppUserResponse updateUser(@RequestBody AppUserRequest request) {
+        return appUserService.updateUser(request);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/update/shout-out")
+    public AppUserResponse updateShoutOut(@RequestBody AppUserRequest request) {
+        return appUserService.updateShoutOut(request);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/find-users")
+    public List<AppUserResponse> findUsersByName(@RequestParam String name) {
+        return appUserService.findUsersByName(name);
+    }
 }

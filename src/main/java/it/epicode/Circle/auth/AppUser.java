@@ -42,6 +42,8 @@ public class AppUser implements UserDetails {
     private String lastName;
     private LocalDate birthDate;
     private String profilePictureUrl;
+    private String shoutOut;
+    private String bio;
     private LocalDate createdAt;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)

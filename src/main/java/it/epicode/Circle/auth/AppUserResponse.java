@@ -17,6 +17,8 @@ public class AppUserResponse {
     private String completeName;
     private LocalDate birthDate;
     private String profilePictureUrl;
+    private String shoutOut;
+    private String bio;
     private LocalDate createdAt;
     private Set<Role> role;
 }
