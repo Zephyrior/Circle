@@ -4,6 +4,7 @@ import it.epicode.Circle.comments.Comment;
 import it.epicode.Circle.circles.Circle;
 import it.epicode.Circle.likes.Like;
 import it.epicode.Circle.posts.Post;
+import it.epicode.Circle.profileviews.ProfileView;
 import it.epicode.Circle.widgets.Widget;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -61,6 +62,14 @@ public class AppUser implements UserDetails {
 //    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
 //    @ToString.Exclude
 //    private List<Circle> receivedRequests = new ArrayList<>();
+
+    @OneToMany(mappedBy = "viewer", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<ProfileView> viewsMade = new ArrayList<>();
+
+    @OneToMany(mappedBy = "viewed", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<ProfileView> viewsReceived = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @ToString.Exclude

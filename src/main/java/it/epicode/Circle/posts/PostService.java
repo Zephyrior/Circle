@@ -2,6 +2,8 @@ package it.epicode.Circle.posts;
 
 import it.epicode.Circle.auth.AppUser;
 import it.epicode.Circle.auth.AppUserRepository;
+import it.epicode.Circle.circles.Circle;
+import it.epicode.Circle.circles.CircleRepository;
 import it.epicode.Circle.comments.Comment;
 import it.epicode.Circle.common.CommonResponse;
 import it.epicode.Circle.likes.Like;
@@ -12,10 +14,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -26,9 +33,18 @@ public class PostService {
     @Autowired
     private AppUserRepository appUserRepository;
 
+    @Autowired
+    private CircleRepository circleRepository;
+
     public AppUser getUserByEmail(){
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated() ||
+                authentication.getPrincipal().equals("anonymousUser")) {
+            throw new AccessDeniedException("Unauthorized");
+        }
+
         return (AppUser) authentication.getPrincipal();
     }
 
@@ -73,11 +89,29 @@ public class PostService {
         postRepository.delete(post);
     }
 
+    public List<Long> getFriendsIds(){
+        Long currentUserId = getUserByEmail().getId();
+        List<Circle> acceptedCircles = circleRepository.findAcceptedCirclesByUserId(currentUserId);
+
+        return acceptedCircles.stream()
+                .map(circle -> circle.getRequester().getId().equals(currentUserId)
+                        ? circle.getReceiver().getId()
+                        : circle.getRequester().getId())
+                .distinct()
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
     public Page<PostResponse> getAllPosts(int page, int size, String createdAt) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, createdAt));
-        Page<Post> postsPage = postRepository.findAll(pageable);
+        //Page<Post> postsPage = postRepository.findAll(pageable);
 
         Long currentUserId = getUserByEmail().getId();
+
+        List<Long> friendsIds = new ArrayList<>(getFriendsIds());
+
+        friendsIds.add(currentUserId);
+
+        Page<Post> postsPage = postRepository.findByAuthorIdIn(friendsIds, pageable);
 
         return postsPage.map(post -> PostMapper.toResponse(post, currentUserId));
     }

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/profile-views")
+@RequestMapping("/api/profile-views")
 @Validated
 public class ProfileViewController {
 

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/circles")
+@RequestMapping("/api/circles")
 @Validated
 public class CircleController {
 
