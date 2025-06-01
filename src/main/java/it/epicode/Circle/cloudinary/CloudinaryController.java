@@ -19,7 +19,7 @@ public class CloudinaryController {
     private final Cloudinary cloudinary;
 
     @PostMapping(path="/uploadme", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void upload(
+    public uploadResponse upload(
             @RequestPart("file")
             MultipartFile file) {
 
@@ -32,6 +32,8 @@ public class CloudinaryController {
             // recupera dalla risposta di cloudinary l'url di visualizzazione dell'immagine
             // che può essere memorizzata in un database
             String url = result.get("secure_url").toString();
+
+            return new uploadResponse(url);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
