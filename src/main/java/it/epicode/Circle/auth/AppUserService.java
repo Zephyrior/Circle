@@ -102,6 +102,13 @@ public class AppUserService {
         return new AppUserResponse(appUser.getId(), appUser.getEmail(), appUser.getFirstName()+" "+appUser.getLastName(), appUser.getBirthDate(), appUser.getProfilePictureUrl(), appUser.getShoutOut(), appUser.getBio(),appUser.getCreatedAt(), appUser.getRole());
     }
 
+    public AppUserResponse getUserById(Long id) {
+        AppUser appUser = appUserRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        return new AppUserResponse(appUser.getId(), appUser.getEmail(), appUser.getFirstName()+" "+appUser.getLastName(), appUser.getBirthDate(), appUser.getProfilePictureUrl(), appUser.getShoutOut(), appUser.getBio(), appUser.getCreatedAt(), appUser.getRole());
+    }
+
 //    public AppUser getCurrentUser() {
 //        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 //

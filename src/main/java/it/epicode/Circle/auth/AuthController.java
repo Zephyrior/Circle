@@ -50,6 +50,11 @@ public class AuthController {
         return appUserService.getCurrentUser();
     }
 
+    @GetMapping("/id/{id}")
+    public AppUserResponse getUserById(@PathVariable Long id) {
+        return appUserService.getUserById(id);
+    }
+
 //    @GetMapping("/me")
 //    public ResponseEntity<?> me() {
 //        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
