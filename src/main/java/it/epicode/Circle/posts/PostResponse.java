@@ -20,6 +20,7 @@ public class PostResponse {
     private String createdAt;
     private Long authorId;
     private String authorFullName;
+    private String authorProfilePictureUrl;
     private List<CommentResponse> comments = new ArrayList<>();
     private List<LikeResponse> likes = new ArrayList<>();
     private int likesCount;

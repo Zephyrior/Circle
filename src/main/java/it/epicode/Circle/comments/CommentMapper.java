@@ -19,6 +19,7 @@ public class CommentMapper {
         AppUser author = comment.getAuthor();
         response.setAuthorId(author.getId());
         response.setAuthorFullName(author.getFirstName()+" "+author.getLastName());
+        response.setAuthorProfilePictureUrl(author.getProfilePictureUrl());
         Post post = comment.getPost();
         response.setPostId(post.getId());
 

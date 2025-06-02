@@ -83,4 +83,16 @@ public class CommentService {
                 .toList();
     }
 
+    public List<CommentResponse> getCommentsByPostId(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("Post not found"));
+
+        List<Comment> comments = commentRepository.findByPostId(postId);
+
+        return comments.stream()
+                .map(CommentMapper::toResponse)
+                .toList();
+
+    }
+
 }

@@ -20,6 +20,7 @@ public class PostMapper {
         response.setCreatedAt(post.getCreatedAt().format(formatter));
         response.setAuthorId(post.getAuthor().getId());
         response.setAuthorFullName(post.getAuthor().getFirstName() + " " + post.getAuthor().getLastName());
+        response.setAuthorProfilePictureUrl(post.getAuthor().getProfilePictureUrl());
 
         List<CommentResponse> commentResponses = post.getComments()
                 .stream()
@@ -41,7 +42,8 @@ public class PostMapper {
                 .map(like -> new LikeResponse(
                         like.getId(),
                         like.getUser().getId(),
-                        like.getUser().getFirstName() + " " + like.getUser().getLastName()))
+                        like.getUser().getFirstName() + " " + like.getUser().getLastName(),
+                        like.getUser().getProfilePictureUrl()))
                 .toList();
 
         response.setLikes(likeResponses);

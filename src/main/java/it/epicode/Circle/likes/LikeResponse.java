@@ -12,5 +12,6 @@ public class LikeResponse {
     private Long id;
     private Long userId;
     private String userFullName;
+    private String userProfilePictureUrl;
 
 }

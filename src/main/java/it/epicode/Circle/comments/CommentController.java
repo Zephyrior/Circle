@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/comments")
+@RequestMapping("/api/comments")
 @Validated
 public class CommentController {
 
@@ -41,6 +41,13 @@ public class CommentController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping
     public List<CommentResponse> getAllComments() {
+
         return commentService.getAllComments();
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{postId}")
+    public List<CommentResponse> getCommentsByPostId(@PathVariable(name = "postId") Long postId) {
+        return commentService.getCommentsByPostId(postId);
     }
 }
