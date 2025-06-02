@@ -24,6 +24,12 @@ public class CircleController {
     }
 
     @PreAuthorize("isAuthenticated()")
+    @GetMapping("/usercircles")
+    public List<CircleResponse> getAcceptedCirclesByUserId(@RequestParam("id") Long id) {
+        return circleService.findAcceptedCirclesByUserId(id);
+    }
+
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public List<CircleResponse> getCirclesByStatus(@RequestParam("status") CircleStatus status) {
         return circleService.getCirclesByStatus(status);

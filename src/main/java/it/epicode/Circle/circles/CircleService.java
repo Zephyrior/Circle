@@ -56,6 +56,22 @@ public class CircleService {
         }).toList();
     }
 
+    public List<CircleResponse> findAcceptedCirclesByUserId( Long id) {
+        List<Circle> circles = circleRepository.findAcceptedCirclesByUserId(id);
+
+        return circles.stream().map(c -> {
+            AppUser otherUser = c.getReceiver().getId().equals(id) ? c.getRequester() : c.getReceiver();
+            return new CircleResponse(c.getId(),
+                    new UserPreview(otherUser.getId(),
+                            otherUser.getFirstName(),
+                            otherUser.getLastName(),
+                            otherUser.getProfilePictureUrl()
+                    ),
+                    c.isSmallCircle(),
+                    c.getCircleStatus());
+        }).toList();
+    }
+
     public List<CircleResponse> getCirclesByStatus(CircleStatus status) {
 
         Long userId = getUserByEmail().getId();
