@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CircleResponse {
     private Long id;
-    private UserPreview circle;
+    private UserPreview requester;
+    private UserPreview receiver;
     private boolean smallCircle;
     private CircleStatus status;
 }

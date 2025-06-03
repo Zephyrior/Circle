@@ -39,37 +39,31 @@ public class CircleService {
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + email));
     }
 
+    private UserPreview toUserPreview(AppUser user) {
+        return new UserPreview(user.getId(), user.getFirstName(), user.getLastName(), user.getProfilePictureUrl());
+    }
+
+    private CircleResponse toCircleResponse(Circle c) {
+        return new CircleResponse(
+                c.getId(),
+                toUserPreview(c.getRequester()),
+                toUserPreview(c.getReceiver()),
+                c.isSmallCircle(),
+                c.getCircleStatus()
+        );
+    }
+
     public List<CircleResponse> getAcceptedCirclesFromCurrentUser() {
         Long userId = getUserByEmail().getId();
         List<Circle> circles = circleRepository.findAcceptedCirclesByUserId(userId);
 
-        return circles.stream().map(c -> {
-            AppUser otherUser = c.getReceiver().getId().equals(userId) ? c.getRequester() : c.getReceiver();
-            return new CircleResponse(c.getId(),
-                    new UserPreview(otherUser.getId(),
-                            otherUser.getFirstName(),
-                            otherUser.getLastName(),
-                            otherUser.getProfilePictureUrl()
-                    ),
-                    c.isSmallCircle(),
-                    c.getCircleStatus());
-        }).toList();
+        return circles.stream().map(this::toCircleResponse).toList();
     }
 
     public List<CircleResponse> findAcceptedCirclesByUserId( Long id) {
         List<Circle> circles = circleRepository.findAcceptedCirclesByUserId(id);
 
-        return circles.stream().map(c -> {
-            AppUser otherUser = c.getReceiver().getId().equals(id) ? c.getRequester() : c.getReceiver();
-            return new CircleResponse(c.getId(),
-                    new UserPreview(otherUser.getId(),
-                            otherUser.getFirstName(),
-                            otherUser.getLastName(),
-                            otherUser.getProfilePictureUrl()
-                    ),
-                    c.isSmallCircle(),
-                    c.getCircleStatus());
-        }).toList();
+        return circles.stream().map(this::toCircleResponse).toList();
     }
 
     public List<CircleResponse> getCirclesByStatus(CircleStatus status) {
@@ -77,33 +71,13 @@ public class CircleService {
         Long userId = getUserByEmail().getId();
 
         List<Circle> circles = circleRepository.getCirclesByStatus(status, userId);
-        return circles.stream().map(c -> {
-            AppUser otherUser = c.getReceiver().getId().equals(userId) ? c.getRequester() : c.getReceiver();
-            return new CircleResponse(c.getId(),
-                    new UserPreview(otherUser.getId(),
-                            otherUser.getFirstName(),
-                            otherUser.getLastName(),
-                            otherUser.getProfilePictureUrl()
-                    ),
-                    c.isSmallCircle(),
-                    c.getCircleStatus());
-        }).toList();
+        return circles.stream().map(this::toCircleResponse).toList();
     }
 
     public List<CircleResponse> getSmallCircles() {
         Long userId = getUserByEmail().getId();
         List<Circle> circles = circleRepository.findSmallCircles(userId);
-        return circles.stream().map(c -> {
-            AppUser otherUser = c.getReceiver().getId().equals(userId) ? c.getRequester() : c.getReceiver();
-            return new CircleResponse(c.getId(),
-                    new UserPreview(otherUser.getId(),
-                            otherUser.getFirstName(),
-                            otherUser.getLastName(),
-                            otherUser.getProfilePictureUrl()
-                    ),
-                    c.isSmallCircle(),
-                    c.getCircleStatus());
-        }).toList();
+        return circles.stream().map(this::toCircleResponse).toList();
     }
 
     @Transactional
@@ -132,14 +106,7 @@ public class CircleService {
 
         Circle savedCircle = circleRepository.save(newCircle);
 
-        return new CircleResponse(savedCircle.getId(),
-                new UserPreview(receiver.getId(),
-                        receiver.getFirstName(),
-                        receiver.getLastName(),
-                        receiver.getProfilePictureUrl()
-                ),
-                newCircle.isSmallCircle(),
-                newCircle.getCircleStatus());
+        return toCircleResponse(savedCircle);
     }
 
     @Transactional
@@ -155,14 +122,7 @@ public class CircleService {
         circle.setCircleStatus(CircleStatus.ACCEPTED);
         Circle savedCircle = circleRepository.save(circle);
 
-        return new CircleResponse(savedCircle.getId(),
-                new UserPreview(savedCircle.getRequester().getId(),
-                        savedCircle.getRequester().getFirstName(),
-                        savedCircle.getRequester().getLastName(),
-                        savedCircle.getRequester().getProfilePictureUrl()
-                ),
-                savedCircle.isSmallCircle(),
-                savedCircle.getCircleStatus());
+        return toCircleResponse(savedCircle);
     }
 
     @Transactional
@@ -195,5 +155,10 @@ public class CircleService {
             throw new IllegalArgumentException("Only pending circle requests can be declined");
         }
         circleRepository.delete(circle);
+    }
+
+    public Optional<CircleResponse> getCircleBetweenUsers(Long userId1, Long userId2) {
+        Optional<Circle> circle = circleRepository.findExistingCircleRequest(userId1, userId2);
+        return circle.map(this::toCircleResponse);
     }
 }

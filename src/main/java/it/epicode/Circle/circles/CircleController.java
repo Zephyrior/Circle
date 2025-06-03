@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/circles")
@@ -67,5 +68,10 @@ public class CircleController {
         return ResponseEntity.noContent().build();
     }
 
-
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/circle/{userId1}/{userId2}")
+    public ResponseEntity<CircleResponse> getCircleBetweenUsers(@PathVariable Long userId1, @PathVariable Long userId2) {
+        Optional<CircleResponse> circle = circleService.getCircleBetweenUsers(userId1, userId2);
+        return circle.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
 }
