@@ -26,4 +26,5 @@ public class PostResponse {
     private int likesCount;
     private boolean likedByUser;
     private Long profileOwnerId;
+    private String profileOwnerFullName;
 }

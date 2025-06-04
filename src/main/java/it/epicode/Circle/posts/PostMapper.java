@@ -49,6 +49,7 @@ public class PostMapper {
         response.setLikes(likeResponses);
 
         response.setProfileOwnerId(post.getProfileOwner() != null ? post.getProfileOwner().getId() : null);
+        response.setProfileOwnerFullName(post.getProfileOwner() != null ? post.getProfileOwner().getFirstName() + " " + post.getProfileOwner().getLastName() : null);
 
         return response;
     }
