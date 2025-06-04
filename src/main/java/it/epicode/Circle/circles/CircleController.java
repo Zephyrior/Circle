@@ -70,8 +70,8 @@ public class CircleController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/circle/{userId1}/{userId2}")
-    public ResponseEntity<CircleResponse> getCircleBetweenUsers(@PathVariable Long userId1, @PathVariable Long userId2) {
-        Optional<CircleResponse> circle = circleService.getCircleBetweenUsers(userId1, userId2);
-        return circle.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public CircleResponse getCircleBetweenUsers(@PathVariable Long userId1, @PathVariable Long userId2) {
+        CircleResponse circle = circleService.getCircleBetweenUsers(userId1, userId2);
+        return circle;
     }
 }

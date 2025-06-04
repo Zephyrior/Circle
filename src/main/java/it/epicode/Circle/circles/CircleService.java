@@ -157,8 +157,17 @@ public class CircleService {
         circleRepository.delete(circle);
     }
 
-    public Optional<CircleResponse> getCircleBetweenUsers(Long userId1, Long userId2) {
+    public CircleResponse getCircleBetweenUsers(Long userId1, Long userId2) {
+        AppUser user1 = appUserRepository.findById(userId1)
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId1));
+        AppUser user2 = appUserRepository.findById(userId2)
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId2));
+
+        if (user1.getId().equals(user2.getId())) {
+            throw new IllegalArgumentException("You cannot send a circle request to yourself");
+        }
+
         Optional<Circle> circle = circleRepository.findExistingCircleRequest(userId1, userId2);
-        return circle.map(this::toCircleResponse);
+        return circle.map(this::toCircleResponse).orElse(null);
     }
 }

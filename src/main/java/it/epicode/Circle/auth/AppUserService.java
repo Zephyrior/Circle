@@ -45,7 +45,7 @@ public class AppUserService {
         appUser.setBirthDate(request.getBirthDate());
         appUser.setFirstName(request.getFirstName());
         appUser.setLastName(request.getLastName());
-        appUser.setProfilePictureUrl("https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200");
+        appUser.setProfilePictureUrl("https://res.cloudinary.com/dfjdpcbsj/image/upload/v1748971148/CIRCLE/circle.png.png");
         appUser.setRole(role);
         return appUserRepository.save(appUser);
     }
