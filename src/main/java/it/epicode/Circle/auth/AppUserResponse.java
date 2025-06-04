@@ -19,6 +19,10 @@ public class AppUserResponse {
     private String profilePictureUrl;
     private String shoutOut;
     private String bio;
+    private String hobby;
+    private String location;
+    private String nickName;
+    private boolean setSmallCircleAsFeatured;
     private LocalDate createdAt;
     private Set<Role> role;
 }

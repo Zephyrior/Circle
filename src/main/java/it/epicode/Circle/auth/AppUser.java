@@ -45,6 +45,11 @@ public class AppUser implements UserDetails {
     private String profilePictureUrl;
     private String shoutOut;
     private String bio;
+    private String hobby;
+    private String location;
+    private String nickName;
+    @Column(nullable = false)
+    private boolean smallCircleAsFeatured = false;
     private LocalDate createdAt;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)

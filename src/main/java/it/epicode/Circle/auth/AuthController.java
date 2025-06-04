@@ -14,7 +14,6 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@Validated
 public class AuthController {
 
     private final AppUserService appUserService;

@@ -27,8 +27,8 @@ public class AuthRunner implements ApplicationRunner {
             RegisterRequest adminRequest = new RegisterRequest();
             adminRequest.setEmail("jackoat2001@gmail.com");
             adminRequest.setPassword("adminpwd");
-            adminRequest.setFirstName("Jack");
-            adminRequest.setLastName("Oat");
+            adminRequest.setFirstName("Maz");
+            adminRequest.setLastName("Tev");
             adminRequest.setBirthDate(LocalDate.of(1994, 1, 20));
             appUserService.registerUser(adminRequest, Set.of(Role.ROLE_ADMIN));
         }
@@ -39,8 +39,8 @@ public class AuthRunner implements ApplicationRunner {
             RegisterRequest userRequest = new RegisterRequest();
             userRequest.setEmail("user@mail.com");
             userRequest.setPassword("userpswd");
-            userRequest.setFirstName("user");
-            userRequest.setLastName("user");
+            userRequest.setFirstName("Xav");
+            userRequest.setLastName("Tez");
             userRequest.setBirthDate(LocalDate.of(1994, 1, 20));
             appUserService.registerUser(userRequest, Set.of(Role.ROLE_USER));
         }

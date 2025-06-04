@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Validated
 public class AppUserService {
 
     @Autowired
@@ -78,7 +80,7 @@ public class AppUserService {
 
     public List<AppUserResponse> getAllUsers() {
         return appUserRepository.findAll().stream()
-                .map(a -> new AppUserResponse(a.getId(),  a.getEmail(), a.getFirstName()+" "+a.getLastName(), a.getBirthDate(), a. getProfilePictureUrl(), a.getShoutOut(), a.getBio(), a.getCreatedAt(), a.getRole()))
+                .map(a -> new AppUserResponse(a.getId(),  a.getEmail(), a.getFirstName()+" "+a.getLastName(), a.getBirthDate(), a. getProfilePictureUrl(), a.getShoutOut(), a.getBio(), a.getHobby(), a.getLocation(), a.getNickName(), a.isSmallCircleAsFeatured(), a.getCreatedAt(), a.getRole()))
                 .collect(Collectors.toList());
     }
 
@@ -99,14 +101,14 @@ public class AppUserService {
     public AppUserResponse getCurrentUser() {
         AppUser appUser = getUserByEmail();
 
-        return new AppUserResponse(appUser.getId(), appUser.getEmail(), appUser.getFirstName()+" "+appUser.getLastName(), appUser.getBirthDate(), appUser.getProfilePictureUrl(), appUser.getShoutOut(), appUser.getBio(),appUser.getCreatedAt(), appUser.getRole());
+        return new AppUserResponse(appUser.getId(), appUser.getEmail(), appUser.getFirstName()+" "+appUser.getLastName(), appUser.getBirthDate(), appUser.getProfilePictureUrl(), appUser.getShoutOut(), appUser.getBio(), appUser.getHobby(), appUser.getLocation(), appUser.getNickName(), appUser.isSmallCircleAsFeatured(), appUser.getCreatedAt(), appUser.getRole());
     }
 
     public AppUserResponse getUserById(Long id) {
         AppUser appUser = appUserRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        return new AppUserResponse(appUser.getId(), appUser.getEmail(), appUser.getFirstName()+" "+appUser.getLastName(), appUser.getBirthDate(), appUser.getProfilePictureUrl(), appUser.getShoutOut(), appUser.getBio(), appUser.getCreatedAt(), appUser.getRole());
+        return new AppUserResponse(appUser.getId(), appUser.getEmail(), appUser.getFirstName()+" "+appUser.getLastName(), appUser.getBirthDate(), appUser.getProfilePictureUrl(), appUser.getShoutOut(), appUser.getBio(), appUser.getHobby(), appUser.getLocation(), appUser.getNickName(), appUser.isSmallCircleAsFeatured(), appUser.getCreatedAt(), appUser.getRole());
     }
 
 //    public AppUser getCurrentUser() {
@@ -135,10 +137,14 @@ public class AppUserService {
         appUser.setShoutOut(request.getShoutOut());
         appUser.setBio(request.getBio());
         appUser.setProfilePictureUrl(request.getProfilePictureUrl());
+        appUser.setHobby(request.getHobby());
+        appUser.setLocation(request.getLocation());
+        appUser.setNickName(request.getNickName());
+        appUser.setSmallCircleAsFeatured(request.isSmallCircleAsFeatured());
 
         appUserRepository.save(appUser);
 
-        return new AppUserResponse(appUser.getId(), appUser.getEmail(), appUser.getFirstName()+" "+appUser.getLastName(), appUser.getBirthDate(), appUser.getProfilePictureUrl(), appUser.getShoutOut(), appUser.getBio(), appUser.getCreatedAt(), appUser.getRole());
+        return new AppUserResponse(appUser.getId(), appUser.getEmail(), appUser.getFirstName()+" "+appUser.getLastName(), appUser.getBirthDate(), appUser.getProfilePictureUrl(), appUser.getShoutOut(), appUser.getBio(), appUser.getHobby(), appUser.getLocation(), appUser.getNickName(), appUser.isSmallCircleAsFeatured(), appUser.getCreatedAt(), appUser.getRole());
     }
 
     public AppUserResponse updateShoutOut(AppUserRequest request) {
@@ -148,13 +154,13 @@ public class AppUserService {
 
         appUserRepository.save(appUser);
 
-        return new AppUserResponse(appUser.getId(), appUser.getEmail(), appUser.getFirstName()+" "+appUser.getLastName(), appUser.getBirthDate(), appUser.getProfilePictureUrl(), appUser.getShoutOut(), appUser.getBio(), appUser.getCreatedAt(), appUser.getRole());
+        return new AppUserResponse(appUser.getId(), appUser.getEmail(), appUser.getFirstName()+" "+appUser.getLastName(), appUser.getBirthDate(), appUser.getProfilePictureUrl(), appUser.getShoutOut(), appUser.getBio(), appUser.getHobby(), appUser.getLocation(), appUser.getNickName(), appUser.isSmallCircleAsFeatured(), appUser.getCreatedAt(), appUser.getRole());
     }
 
     public List<AppUserResponse> findUsersByName(String name) {
 
         return appUserRepository.findUsersByName(name).stream()
-                .map(a -> new AppUserResponse(a.getId(), a.getEmail(), a.getFirstName()+" "+a.getLastName(), a.getBirthDate(), a. getProfilePictureUrl(), a.getShoutOut(), a.getBio(), a.getCreatedAt(), a.getRole()))
+                .map(a -> new AppUserResponse(a.getId(), a.getEmail(), a.getFirstName()+" "+a.getLastName(), a.getBirthDate(), a. getProfilePictureUrl(), a.getShoutOut(), a.getBio(), a.getHobby(), a.getLocation(), a.getNickName(), a.isSmallCircleAsFeatured(), a.getCreatedAt(), a.getRole()))
                 .collect(Collectors.toList());
     }
 }
