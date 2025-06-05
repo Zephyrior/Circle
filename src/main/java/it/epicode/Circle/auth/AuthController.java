@@ -68,7 +68,7 @@ public class AuthController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PutMapping("/update/shout-out")
+    @PatchMapping("/update/shout-out")
     public AppUserResponse updateShoutOut(@RequestBody AppUserRequest request) {
         return appUserService.updateShoutOut(request);
     }
