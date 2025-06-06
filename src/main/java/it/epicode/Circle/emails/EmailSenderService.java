@@ -43,7 +43,7 @@ public class EmailSenderService {
         System.out.println("Email inviata con successo a " + to + " con allegato: " + attachmentName);
     }
 
-    public void sendEmailRegistration(emailRequest request) throws MessagingException {
+    public void sendEmailRegistration(EmailRequest request) throws MessagingException {
 
         if (request.getTo() == null || request.getTo().isEmpty()) {
             throw new IllegalArgumentException("Recipient email address cannot be null or empty");
@@ -69,7 +69,7 @@ public class EmailSenderService {
         System.out.println("Email sent successfully to " + request.getTo());
     }
 
-    public void sendUpdateProfile(emailRequest request) throws MessagingException {
+    public void sendUpdateProfile(EmailRequest request) throws MessagingException {
 
         if (request.getTo() == null || request.getTo().isEmpty()) {
             throw new IllegalArgumentException("Recipient email address cannot be null or empty");
@@ -94,7 +94,7 @@ public class EmailSenderService {
         System.out.println("Email sent successfully to " + request.getTo());
     }
 
-    public void sendInvitation(emailRequest request) throws MessagingException {
+    public void sendInvitation(EmailRequest request) throws MessagingException {
 
         if (request.getTo() == null || request.getTo().isEmpty()) {
             throw new IllegalArgumentException("Recipient email address cannot be null or empty");

@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/emails")
-public class emailController {
+public class EmailController {
 
     @Autowired
     private EmailSenderService emailSenderService;
 
     @PostMapping("/registration")
-    public ResponseEntity<String> sendRegistrationEmail( @RequestBody emailRequest request) {
+    public ResponseEntity<String> sendRegistrationEmail( @RequestBody EmailRequest request) {
         try {
             emailSenderService.sendEmailRegistration(request);
         } catch (MessagingException e) {
@@ -31,7 +31,7 @@ public class emailController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/update")
-    public ResponseEntity<String> sendUpdateProfile(@RequestBody emailRequest request) {
+    public ResponseEntity<String> sendUpdateProfile(@RequestBody EmailRequest request) {
         try {
             emailSenderService.sendUpdateProfile(request);
         } catch (MessagingException e) {
@@ -44,7 +44,7 @@ public class emailController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/invitation")
-    public ResponseEntity<String> sendInvitation(@RequestBody emailRequest request) {
+    public ResponseEntity<String> sendInvitation(@RequestBody EmailRequest request) {
         try {
             emailSenderService.sendInvitation(request);
         } catch (MessagingException e) {

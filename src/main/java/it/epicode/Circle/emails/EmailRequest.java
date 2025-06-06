@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class emailRequest {
+public class EmailRequest {
     private String to;
     private String fullName;
 }

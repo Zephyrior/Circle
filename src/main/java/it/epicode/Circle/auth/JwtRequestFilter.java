@@ -111,7 +111,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             "/api/public",
             "/api/auth/login",
             "/api/auth/register",
-            "/api/emails/**",
+            "/api/emails/registration",
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/error",
