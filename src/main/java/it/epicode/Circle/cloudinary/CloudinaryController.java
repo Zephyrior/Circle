@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/images")
@@ -24,13 +25,11 @@ public class CloudinaryController {
             MultipartFile file) {
 
         try {
-            // folder è il nome della cartella dove l'immagine sarà salvata in cloudinary
-            // public_id rappresenta il nome dell'immagine
-            Map result = cloudinary.uploader()
-                    .upload(file.getBytes(),  Cloudinary.asMap("folder", "CIRCLE", "public_id", file.getOriginalFilename()));
 
-            // recupera dalla risposta di cloudinary l'url di visualizzazione dell'immagine
-            // che può essere memorizzata in un database
+            String uniqueName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            Map result = cloudinary.uploader().upload(file.getBytes(),
+                    Cloudinary.asMap("folder", "CIRCLE", "public_id", uniqueName));
+
             String url = result.get("secure_url").toString();
 
             return new uploadResponse(url);
