@@ -17,7 +17,6 @@ public class emailController {
     @Autowired
     private EmailSenderService emailSenderService;
 
-    @PreAuthorize("isAuthenticated()")
     @PostMapping("/registration")
     public ResponseEntity<String> sendRegistrationEmail( @RequestBody emailRequest request) {
         try {
