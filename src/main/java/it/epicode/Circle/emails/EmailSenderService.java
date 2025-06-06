@@ -42,4 +42,82 @@ public class EmailSenderService {
         mailSender.send(message);
         System.out.println("Email inviata con successo a " + to + " con allegato: " + attachmentName);
     }
+
+    public void sendEmailRegistration(emailRequest request) throws MessagingException {
+
+        if (request.getTo() == null || request.getTo().isEmpty()) {
+            throw new IllegalArgumentException("Recipient email address cannot be null or empty");
+        }
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        String[] recipients = request.getTo().split("\\s*[,;]\\s*");
+        String name = request.getFullName();
+
+        String subject = "Welcome to Circle!";
+        String body = "<p>Dear <strong>" + name + "</strong>,</p>" +
+                "<p>Welcome to <strong>Circle</strong>!</p>" +
+                "<p>Thank you for registering with us.</p>" +
+                "<p>Best regards,<br/>Circle Team</p>";
+
+        helper.setTo(recipients);
+        helper.setSubject(subject);
+        helper.setText(body, true);
+
+        mailSender.send(message);
+        System.out.println("Email sent successfully to " + request.getTo());
+    }
+
+    public void sendUpdateProfile(emailRequest request) throws MessagingException {
+
+        if (request.getTo() == null || request.getTo().isEmpty()) {
+            throw new IllegalArgumentException("Recipient email address cannot be null or empty");
+        }
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        String[] recipients = request.getTo().split("\\s*[, ;]\\s*");
+        String name = request.getFullName();
+
+        String subject = "Profile Updated";
+        String body = "<p>Dear " + name + ",</p>" +
+                "<p>Your profile has been successfully updated.</p>" +
+                "<p>Best regards,<br/>Circle Team</p>";
+
+        helper.setTo(recipients);
+        helper.setSubject(subject);
+        helper.setText(body, true);
+
+        mailSender.send(message);
+        System.out.println("Email sent successfully to " + request.getTo());
+    }
+
+    public void sendInvitation(emailRequest request) throws MessagingException {
+
+        if (request.getTo() == null || request.getTo().isEmpty()) {
+            throw new IllegalArgumentException("Recipient email address cannot be null or empty");
+        }
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        String[] recipients = request.getTo().split("\\s*[, ;]\\s*");
+        String name = request.getFullName();
+
+        String subject = "Invitation to Circle";
+        String body = "<p>Dear " + name + ",</p>" +
+                "<p>You have been invited to join <strong>Circle</strong>.</p>" +
+                "<p>Please use the following link to register:</p>" +
+                "<p><a href=\"https://circle-social-51yq.onrender.com/\">Join Circle</a></p>" +
+                "<p>Best regards,<br/>Circle Team</p>";
+
+        helper.setTo(recipients);
+        helper.setSubject(subject);
+        helper.setText(body, true); // true = send as HTML
+
+        mailSender.send(message);
+        System.out.println("Email sent successfully to " + request.getTo());
+    }
 }
