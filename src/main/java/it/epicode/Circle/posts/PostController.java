@@ -25,7 +25,7 @@ public class PostController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePost(Long id) {
         postService.deletePost(id);
